@@ -47,7 +47,7 @@ class TestUserMustSignInOnCartPaymentFlow:
 
         # Step 6: click the first 'Add to cart' button in the dropdown
         home_page.click_add_to_cart_of_first_item()
-        
+
         # Step 7: verify the item name in the cart contains the search keyword
         cart_item_name = home_page.get_cart_item_name()
         assert item_that_user_search in cart_item_name, (
@@ -55,3 +55,5 @@ class TestUserMustSignInOnCartPaymentFlow:
         )
         # Step 8: verify the name in the cart is the name actually added
         home_page.print_cart_item_name()    
+
+# edited 09:27 25.03
