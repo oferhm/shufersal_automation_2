@@ -1,9 +1,9 @@
-# tests/test_shufersal_milk_flow.py
+# tests/test_user_must_sign_in_on_cart_payment_flow.py
 import pytest
 from pages.home_page import HomePage
 
 
-class TestShufersalMilkFlow:
+class TestUserMustSignInOnCartPaymentFlow:
 
     @pytest.mark.smoke
     @pytest.mark.shufersal
@@ -29,17 +29,29 @@ class TestShufersalMilkFlow:
         
         # Step 4: get all suggestion texts
         items = home_page.get_search_result_items_list()
-        print(f"all items: {items}")
+        print("assert we got 10 results for the search")
         assert len(items) == 10, f"Expected 10 search suggestions but got {len(items)}"
 
-        # Print all items to console (visible with pytest -s)
+        # Print all items to console for debugging (visible with pytest -s)
         print(f"\nFound {len(items)} suggestions:")
         for i, text in enumerate(items, start=1):
             print(f"  {i}. {text}")
 
         # Step 5: verify every item contains the string that the user typed
+        print("verify every item in the results contains the string user submitted")
         failing = [text for text in items if item_that_user_search not in text]
         assert len(failing) == 0, (
             f"These suggestions do not contain '{item_that_user_search}':\n"
             + "\n".join(f"  - {t}" for t in failing)
         )
+
+        # Step 6: click the first 'Add to cart' button in the dropdown
+        home_page.click_add_to_cart_of_first_item()
+        
+        # Step 7: verify the item name in the cart contains the search keyword
+        cart_item_name = home_page.get_cart_item_name()
+        assert item_that_user_search in cart_item_name, (
+            f"Expected cart item name to contain '{item_that_user_search}' but got '{cart_item_name}'"
+        )
+        # Step 8: verify the name in the cart is the name actually added
+        home_page.print_cart_item_name()    

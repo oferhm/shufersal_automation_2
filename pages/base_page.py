@@ -49,10 +49,27 @@ class BasePage:
         self.page.locator(selector).wait_for(state="visible", timeout=timeout)
         self.page.locator(selector).click()
 
+    def click_first_element(self, selector: str, timeout: int = Timeouts.DEFAULT) -> None:
+        """Wait for the first element matching the selector to be visible, then click it."""
+        self.page.locator(selector).first.wait_for(state="visible", timeout=timeout)
+        self.page.locator(selector).first.click()
+
     def fill(self, selector: str, text: str, timeout: int = Timeouts.DEFAULT) -> None:
         """Clear the field and type text into it."""
         self.page.locator(selector).wait_for(state="visible", timeout=timeout)
         self.page.locator(selector).fill(text)
+
+    def hover(self, selector: str, timeout: int = Timeouts.DEFAULT) -> None:
+        """
+        Wait for element to be visible, then move the mouse over it.
+
+        WHY: Some menus, tooltips, and dropdowns only appear on hover —
+             they are not in the DOM until the cursor is over the trigger.
+             Using wait_for(visible) first avoids hovering on a ghost element
+             that hasn't rendered yet.
+        """
+        self.page.locator(selector).wait_for(state="visible", timeout=timeout)
+        self.page.locator(selector).hover()
 
     def press_key(self, selector: str, key: str) -> None:
         """Press a keyboard key on a focused element (e.g. 'Enter')."""
@@ -64,6 +81,11 @@ class BasePage:
         """Return the visible text content of a single element."""
         self.page.locator(selector).wait_for(state="visible", timeout=timeout)
         return self.page.locator(selector).inner_text().strip()
+    
+    def get_text_of_first_element(self, selector: str, timeout: int = Timeouts.DEFAULT) -> str:
+        """Return the visible text content of the first element matching the selector."""
+        self.page.locator(selector).first.wait_for(state="visible", timeout=timeout)
+        return self.page.locator(selector).first.inner_text().strip()
 
     def get_all_texts(self, selector: str, timeout: int = Timeouts.DEFAULT) -> list[str]:
         """
